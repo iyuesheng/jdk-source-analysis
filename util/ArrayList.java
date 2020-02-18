@@ -38,25 +38,15 @@ import sun.misc.SharedSecrets;
  * 如果不存在这样的Object，ArrayList应该用Collections.synchronizedList包装起来
  * 最好在创建的时候就包装起来，来保证同步访问
  *
- * <p><a name="fail-fast">
- * The iterators returned by this class's {@link #iterator() iterator} and
- * {@link #listIterator(int) listIterator} methods are <em>fail-fast</em>:</a>
- * if the list is structurally modified at any time after the iterator is
- * created, in any way except through the iterator's own
- * {@link ListIterator#remove() remove} or
- * {@link ListIterator#add(Object) add} methods, the iterator will throw a
- * {@link ConcurrentModificationException}.  Thus, in the face of
- * concurrent modification, the iterator fails quickly and cleanly, rather
- * than risking arbitrary, non-deterministic behavior at an undetermined
- * time in the future.
+ * iterator()和listIterator(int)方法是fail-fast的，
+ * 如果在迭代器创建之后，列表进行结构化修改，迭代器会抛出
+ * ConcurrentModificationException。
  *
- * <p>Note that the fail-fast behavior of an iterator cannot be guaranteed
- * as it is, generally speaking, impossible to make any hard guarantees in the
- * presence of unsynchronized concurrent modification.  Fail-fast iterators
- * throw {@code ConcurrentModificationException} on a best-effort basis.
- * Therefore, it would be wrong to write a program that depended on this
- * exception for its correctness:  <i>the fail-fast behavior of iterators
- * should be used only to detect bugs.</i>
+ * 因此，面对并发修改，迭代器快速失败、清理，而不是在未知的时间不确定的情况下冒险。
+ *
+ * 请注意，快速失败行为不能被保证。通常来讲，不能同步进行的并发修改几乎不可能
+ * 做任何保证。因此，写依赖这个异常的程序的代码是错误的，快速失败行为应该仅仅
+ * 用于防止bug。
  *
  * 这个class是Java Collections Framework之一。
  */
@@ -299,10 +289,7 @@ public class ArrayList<E> extends AbstractList<E>
 
     /**
      * 返回一个包含列表中所有元素的数组，按照从前往后的顺序
-     *
-     * <p>The returned array will be "safe" in that no references to it are
-     * maintained by this list.  (In other words, this method must allocate
-     * a new array).  The caller is thus free to modify the returned array.
+     * 这个方法是申请一个新的数组
      *
      */
     public Object[] toArray() {
@@ -310,28 +297,9 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Returns an array containing all of the elements in this list in proper
-     * sequence (from first to last element); the runtime type of the returned
-     * array is that of the specified array.  If the list fits in the
-     * specified array, it is returned therein.  Otherwise, a new array is
-     * allocated with the runtime type of the specified array and the size of
-     * this list.
-     *
-     * <p>If the list fits in the specified array with room to spare
-     * (i.e., the array has more elements than the list), the element in
-     * the array immediately following the end of the collection is set to
-     * <tt>null</tt>.  (This is useful in determining the length of the
-     * list <i>only</i> if the caller knows that the list does not contain
-     * any null elements.)
-     *
-     * @param a the array into which the elements of the list are to
-     *          be stored, if it is big enough; otherwise, a new array of the
-     *          same runtime type is allocated for this purpose.
-     * @return an array containing the elements of the list
-     * @throws ArrayStoreException if the runtime type of the specified array
-     *         is not a supertype of the runtime type of every element in
-     *         this list
-     * @throws NullPointerException if the specified array is null
+     * 返回一个包含列表中所有元素的数组，按照从前往后的顺序
+     * 如果参数数组的长度大于等于列表的长度，将列表元素放入该数组返回。
+     * 否则，返回一个新数组。
      */
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
@@ -364,13 +332,12 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Replaces the element at the specified position in this list with
-     * the specified element.
+     * 用新元素替换列表中特殊位置的元素
      *
-     * @param index index of the element to replace
-     * @param element element to be stored at the specified position
-     * @return the element previously at the specified position
-     * @throws IndexOutOfBoundsException {@inheritDoc}
+     * @param index 要替换的列表元素下标
+     * @param element 新元素 
+     * @return 返回index位置的老元素
+     * @throws IndexOutOfBoundsException
      */
     public E set(int index, E element) {
         rangeCheck(index);
@@ -483,17 +450,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Appends all of the elements in the specified collection to the end of
-     * this list, in the order that they are returned by the
-     * specified collection's Iterator.  The behavior of this operation is
-     * undefined if the specified collection is modified while the operation
-     * is in progress.  (This implies that the behavior of this call is
-     * undefined if the specified collection is this list, and this
-     * list is nonempty.)
-     *
-     * @param c collection containing elements to be added to this list
-     * @return <tt>true</tt> if this list changed as a result of the call
-     * @throws NullPointerException if the specified collection is null
+     * 将参数集合全部追加到列表的后面
      */
     public boolean addAll(Collection<? extends E> c) {
         Object[] a = c.toArray();
@@ -505,19 +462,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Inserts all of the elements in the specified collection into this
-     * list, starting at the specified position.  Shifts the element
-     * currently at that position (if any) and any subsequent elements to
-     * the right (increases their indices).  The new elements will appear
-     * in the list in the order that they are returned by the
-     * specified collection's iterator.
-     *
-     * @param index index at which to insert the first element from the
-     *              specified collection
-     * @param c collection containing elements to be added to this list
-     * @return <tt>true</tt> if this list changed as a result of the call
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     * @throws NullPointerException if the specified collection is null
+     * 从参数集合的指定位置开始，将参数集合的元素，插入到列表汇总
      */
     public boolean addAll(int index, Collection<? extends E> c) {
         rangeCheckForAdd(index);
@@ -537,18 +482,8 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Removes from this list all of the elements whose index is between
-     * {@code fromIndex}, inclusive, and {@code toIndex}, exclusive.
-     * Shifts any succeeding elements to the left (reduces their index).
-     * This call shortens the list by {@code (toIndex - fromIndex)} elements.
-     * (If {@code toIndex==fromIndex}, this operation has no effect.)
-     *
-     * @throws IndexOutOfBoundsException if {@code fromIndex} or
-     *         {@code toIndex} is out of range
-     *         ({@code fromIndex < 0 ||
-     *          fromIndex >= size() ||
-     *          toIndex > size() ||
-     *          toIndex < fromIndex})
+     * 从列表中移除包含fromIndex位置到不包含toIndex位置的所有元素
+     * 如果fromIndex=toIndex，此操作没有影响
      */
     protected void removeRange(int fromIndex, int toIndex) {
         modCount++;
@@ -565,10 +500,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Checks if the given index is in range.  If not, throws an appropriate
-     * runtime exception.  This method does *not* check if the index is
-     * negative: It is always used immediately prior to an array access,
-     * which throws an ArrayIndexOutOfBoundsException if index is negative.
+     * 检查给定index是否在列表长度范围之内
      */
     private void rangeCheck(int index) {
         if (index >= size)
@@ -576,7 +508,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * A version of rangeCheck used by add and addAll.
+     * 添加元素时候的校验方法
      */
     private void rangeCheckForAdd(int index) {
         if (index > size || index < 0)
@@ -584,28 +516,14 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Constructs an IndexOutOfBoundsException detail message.
-     * Of the many possible refactorings of the error handling code,
-     * this "outlining" performs best with both server and client VMs.
+     * 构造IndexOutOfBoundsException的详细信息
      */
     private String outOfBoundsMsg(int index) {
         return "Index: "+index+", Size: "+size;
     }
 
     /**
-     * Removes from this list all of its elements that are contained in the
-     * specified collection.
-     *
-     * @param c collection containing elements to be removed from this list
-     * @return {@code true} if this list changed as a result of the call
-     * @throws ClassCastException if the class of an element of this list
-     *         is incompatible with the specified collection
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if this list contains a null element and the
-     *         specified collection does not permit null elements
-     * (<a href="Collection.html#optional-restrictions">optional</a>),
-     *         or if the specified collection is null
-     * @see Collection#contains(Object)
+     * 移除列表中所有的参数集合中包含的元素
      */
     public boolean removeAll(Collection<?> c) {
         Objects.requireNonNull(c);
@@ -613,20 +531,8 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Retains only the elements in this list that are contained in the
-     * specified collection.  In other words, removes from this list all
-     * of its elements that are not contained in the specified collection.
-     *
-     * @param c collection containing elements to be retained in this list
-     * @return {@code true} if this list changed as a result of the call
-     * @throws ClassCastException if the class of an element of this list
-     *         is incompatible with the specified collection
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if this list contains a null element and the
-     *         specified collection does not permit null elements
-     * (<a href="Collection.html#optional-restrictions">optional</a>),
-     *         or if the specified collection is null
-     * @see Collection#contains(Object)
+     * 保持列表中所有的在参数集合中存在的元素，换句话说，就是移除
+     * 参数集合中不存在的元素
      */
     public boolean retainAll(Collection<?> c) {
         Objects.requireNonNull(c);
@@ -718,14 +624,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Returns a list iterator over the elements in this list (in proper
-     * sequence), starting at the specified position in the list.
-     * The specified index indicates the first element that would be
-     * returned by an initial call to {@link ListIterator#next next}.
-     * An initial call to {@link ListIterator#previous previous} would
-     * return the element with the specified index minus one.
-     *
-     * <p>The returned list iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
+     * 从指定位置，返回列表的迭代器，按照元素从前到后的顺序
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
@@ -736,11 +635,8 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Returns a list iterator over the elements in this list (in proper
-     * sequence).
-     *
-     * <p>The returned list iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
-     *
+     * 返回包含列表中所有元素的list迭代器
+     * 该迭代器是fail-fast的
      * @see #listIterator(int)
      */
     public ListIterator<E> listIterator() {
@@ -748,18 +644,15 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Returns an iterator over the elements in this list in proper sequence.
-     *
-     * <p>The returned iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
-     *
-     * @return an iterator over the elements in this list in proper sequence
+     * 返回包含列表中所有元素的迭代器
+     * 该迭代器是fail-fast的
      */
     public Iterator<E> iterator() {
         return new Itr();
     }
 
     /**
-     * An optimized version of AbstractList.Itr
+     * 一个 AbstractList.Itr的优化版本
      */
     private class Itr implements Iterator<E> {
         int cursor;       // index of next element to return
@@ -829,7 +722,7 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * An optimized version of AbstractList.ListItr
+     * 一个AbstractList.ListItr的优化版本
      */
     private class ListItr extends Itr implements ListIterator<E> {
         ListItr(int index) {
@@ -890,12 +783,11 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Returns a view of the portion of this list between the specified
-     * {@code fromIndex}, inclusive, and {@code toIndex}, exclusive.  (If
-     * {@code fromIndex} and {@code toIndex} are equal, the returned list is
-     * empty.)  The returned list is backed by this list, so non-structural
-     * changes in the returned list are reflected in this list, and vice-versa.
-     * The returned list supports all of the optional list operations.
+     * 返回从包含fromIndex到不包含toIndex的子列表。
+     * 如果fromIndex = toIndex返回子列表是空的。
+     * 
+     * 因为子列表是被当前列表支持的，所有子列表和当前列表的非结构化改变是彼此影响的。
+     * 子列表支持所有的list原始操作。
      *
      * <p>This method eliminates the need for explicit range operations (of
      * the sort that commonly exist for arrays).  Any operation that expects
